@@ -29,7 +29,7 @@ app.get("/weather", async (request, response) => {
   try {
     const weatherData = await axios.get(url);
     console.log(weatherData.data.data);
-    const weatherArray = movieData.data.map((day) => new Forecast(day));
+    const weatherArray = weatherData.data.data.map((day) => new Forecast(day));
     response.status(200).send(weatherArray);
   } catch (error) {
     console.log(error);
