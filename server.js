@@ -3,9 +3,10 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-// const weather = require("./data/weather.json");
+// const weather = require("./modules/weather");
 const axios = require("axios");
-
+const getWeather = require("./modules/weather.js");
+// console.log(getWeather);
 const app = express();
 app.use(cors());
 
@@ -15,27 +16,24 @@ app.get("/", (request, response) => {
   response.send("This is the Mighty Home Route, bow or die.");
 });
 
-app.get("/weather", async (request, response) => {
+// app.get("/hello-there", (request, response) => {
+//   response.send("Hello there. General Kenobi, you are a bold one.");
+// });
+
+app.get("/weather", weatherHandler);
+
+function weatherHandler(request, response) {
   let lat = request.query.lat;
   let lon = request.query.lon;
-  let searchQuery = request.query.searchQuery;
+  // let searchQuery = request.query.searchQuery;
 
-  // const city = weather.find(
-  //   (cityObj) => cityObj.city_name.toLowerCase() === searchQuery.toLowerCase()
-  // );
-  // console.log(city);
-  const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&days=7&lat=${lat}&lon=${lon}`;
-  console.log(url);
-  try {
-    const weatherData = await axios.get(url);
-    console.log(weatherData.data.data);
-    const weatherArray = weatherData.data.data.map((day) => new Forecast(day));
-    response.status(200).send(weatherArray);
-  } catch (error) {
-    console.log(error);
-    response.status(500).send("city not found");
-  }
-});
+ getWeather(lat, lon)
+  .then(summaries => response.send(summaries))
+  .catch(error =>
+    console.log(error),
+    response.status(500).send('meow meow your request failed.')
+  )
+};
 
 // app.get("/movies", async (request, response) => {
 //   let searchQuery = request.query.searchQuery;
@@ -54,11 +52,6 @@ app.get("/weather", async (request, response) => {
 //     response.status(500).send("internal server error");
 //   }
 // });
-
-function Forecast(day) {
-  this.day = day.valid_date;
-  this.description = day.weather.description;
-}
 // function Movie(movie) {
 //   this.title = movie.title,
 //   this.overview = movie.overview,
