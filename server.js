@@ -16,9 +16,9 @@ app.get("/", (request, response) => {
   response.send("This is the Mighty Home Route, bow or die.");
 });
 
-// app.get("/hello-there", (request, response) => {
-//   response.send("Hello there. General Kenobi, you are a bold one.");
-// });
+app.get("/hello-there", (request, response) => {
+  response.send("Hello there. General Kenobi, you are a bold one.");
+});
 
 app.get("/weather", weatherHandler);
 
@@ -29,10 +29,10 @@ function weatherHandler(request, response) {
 
  getWeather(lat, lon)
   .then(summaries => response.send(summaries))
-  .catch(error =>
-    console.log(error),
-    response.status(500).send('meow meow your request failed.')
-  )
+  .catch(error => {
+    console.log(error);
+    response.status(500).send('meow meow your request failed.');
+  })
 };
 
 // app.get("/movies", async (request, response) => {
